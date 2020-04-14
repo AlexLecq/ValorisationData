@@ -3,33 +3,15 @@ import time
 import json
 from urllib.request import urlopen
 
-
-class City:
-    def __init__(self, name, api_key):
-        self.name = name
-        self.api_key = api_key
-
-
 WEATHER_TOPIC = 'meteoiot'
 
-CITIES = [
-    City('Paris', '19053ef85ef1b948847c41a7b78585bc'),
-    City('Marseille', '22a85a0e711e34359c1647f0c82aedf0'),
-    City('Lyon', 'd82c7c91c484f775d8118b58199bdd21'),
-    City('Bordeaux', '94a63ea8c259c120cb59ad04f804d2a6'),
-    City('Nantes', '29dac037018e9a651c9fc2a0bc82c43e'),
-    City('Toulouse', '209f5592784e87a6ae5095095e1af97f'),
-    City('Strasbourg', 'bf5ebbcb48b6b3331038514d5fa8a16c'),
-    City('Nice', '2c7745c0338a71a9fca3874a2ef7a340'),
-    City('Lille', '8cd1b9d8283e5052a664ae1378257363'),
-    City('Montpellier', 'da8cc5dac3a3e21ab337743d2a9765ef')
-]
+CITIES = ['Paris', 'Marseille', 'Lyon', 'Bordeaux', 'Nantes', 'Toulouse', 'Strasbourg', 'Nice', 'Lille', 'Montpellier']
 
 
-def get_data(city_data):
-    in_data = json.load(urlopen(f'http://api.openweathermap.org/data/2.5/weather?q={city_data.name}&units=metric&appid={city_data.api_key}'))
+def get_data(city):
+    in_data = json.load(urlopen(f'http://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid=19053ef85ef1b948847c41a7b78585bc'))
     return {
-        'name': city_data.name,
+        'name': city,
         'long': in_data['coord']['lon'],
         'lat': in_data['coord']['lat'],
         'temp': in_data['main']['temp'],
@@ -40,8 +22,8 @@ def get_data(city_data):
 
 def get_all_data():
     all_data = []
-    for city_data in CITIES:
-        all_data.append(get_data(city_data))
+    for city in CITIES:
+        all_data.append(get_data(city))
     return json.dumps({'cities': all_data})
 
 
