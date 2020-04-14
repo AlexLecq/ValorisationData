@@ -36,7 +36,7 @@ def get_all_data():
     all_data = []
     for city_data in CITIES:
         all_data.append(get_data(city_data))
-    return json.dumps(all_data)
+    return json.dumps({'cities': all_data})
 
 
 def on_connect(client, userdata, flags, rc):
@@ -57,6 +57,6 @@ client.connect(broker)
 while not client.connection_state:
     time.sleep(1)
 
-client.publish(WEATHER_TOPIC, get_all_data(), 0, True)
+client.publish(WEATHER_TOPIC, get_all_data(), 0, False)
 client.loop_stop()
 client.disconnect()
