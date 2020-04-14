@@ -38,3 +38,20 @@ client.subscribe(process.env.MQTT_TOPIC, (err) => {
     });
 });
 
+app.get('/cities', async (req, res) => {
+    const startTime = req.query.startTime;
+    const endTime = req.query.endTime;
+    res.send(await weatherDataClient.getDataForPeriod(startTime,endTime));
+});
+
+app.get('/city', async (req, res) => {
+    const startTime = req.query.startTime;
+    const endTime = req.query.endTime;
+    const cityName = req.query.cityName;
+    res.send(await weatherDataClient.getCityDataForPeriod(startTime,endTime,cityName));
+});
+
+
+
+
+
