@@ -2,7 +2,13 @@ import paho.mqtt.client as mqtt
 import time
 import json
 from urllib.request import urlopen
-from python.City import City
+
+
+class City:
+    def __init__(self, name, api_key):
+        self.name = name
+        self.api_key = api_key
+
 
 WEATHER_TOPIC = 'meteoiot'
 

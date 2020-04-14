@@ -1,1 +1,1 @@
-schtasks /create /sc minute /mo 5 /tn iot /tr "py PATH\TO\meteo.py"
+schtasks /create /sc minute /mo 5 /tn iot /tr "py C:\Users\nicoa\Documents\GitHub\ValorisationData\python\meteo.py"
