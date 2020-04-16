@@ -10,22 +10,22 @@ module.exports = class WeatherDataAccess {
           this.mongodb_collection = col;
      }
 
-     async insert(weatherData) {
-          return new Promise(async (resolve, reject) => {
-               MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true }, (dbError, mongoClient) => {
-                    if (dbError) {
-                         reject('Connexion to database failed');
-                         return;
-                    }
-                    mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).insertOne(Object.assign({ date: Date.now() }, weatherData), {}, (error, result) => {
-                         if (error)
-                              reject('No data inserted');
-                         else
-                              resolve(result);
-                    });
-               });
-          });
-     }
+    insert(weatherData) {
+        return new Promise((resolve, reject) => {
+            MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true}, (dbError, mongoClient) => {
+                if (dbError) {
+                    reject('Connexion to database failed');
+                    return;
+                }
+                mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).insertOne(Object.assign({date: Date.now()}, weatherData), {}, (error, result) => {
+                    if (error)
+                        reject('No data inserted');
+                    else
+                        resolve(result);
+                });
+            });
+        });
+    }
 
      getCurrentData() {
           return new Promise((resolve, reject) => {
@@ -72,29 +72,34 @@ module.exports = class WeatherDataAccess {
           });
      }
 
-     getCityDataForPeriod(startTime, endTime, cityName) {
-          return new Promise((resolve, reject) => {
-               MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true }, (dbError, mongoClient) => {
-                    if (dbError) {
-                         reject('Connexion to database failed');
-                         return;
+    getCityDataForPeriod(startTime, endTime, cityName) {
+        return new Promise((resolve, reject) => {
+            MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true}, (dbError, mongoClient) => {
+                if (dbError) {
+                    reject('Connexion to database failed');
+                    return;
+                }
+                mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).find({
+                    $and: [{
+                        date: {$gte: startTime},
+                    }, {
+                        date: {$lte: endTime},
+                    }]
+                }).toArray((error, result) => {
+                    if (error)
+                        reject('No data found');
+                    else {
+                        let realResult = [];
+                        for (let oneData of result)
+                            realResult.push({
+                                date: oneData.date,
+                                city: oneData.cities.find((city) => city.name === cityName)
+                            });
+                        resolve(realResult);
                     }
-                    mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).find({
-                         $and: [{
-                              date: { $gte: startTime },
-                              cities: { $elemMatch: { name: cityName } }
-                         }, {
-                              date: { $lte: endTime },
-                              cities: { $elemMatch: { name: cityName } }
-                         }]
-                    }).toArray((error, result) => {
-                         if (error)
-                              reject('No data found');
-                         else
-                              resolve(result);
-                         mongoClient.close();
-                    });
-               });
-          });
-     }
+                    mongoClient.close();
+                });
+            });
+        });
+    }
 };
