@@ -30,9 +30,6 @@ def get_all_data():
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         client.connection_state = True
-        print('Connected')
-    else:
-        print('Bad connection Returned code=', rc)
 
 
 broker = 'broker.mqttdashboard.com'
