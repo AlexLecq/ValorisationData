@@ -20,3 +20,12 @@ body{
      justify-content: space-between;
      width: 80vw;
 }
+
+.modal-footer{
+     justify-content: start !important;
+}
+
+.modal-ku {
+     width: 80vw;
+     margin: auto;
+   }
