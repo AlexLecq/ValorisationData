@@ -5,8 +5,8 @@
     <link rel='stylesheet' href='stylesheets/style.css'/>
 </head>
 <body>
-<h1>Paris</h1>
-<p>Liste des graphes pour Paris</p>
+<h1 class="containCityName">##CITYNAME##</h1>
+<p class="containCityName">Liste des graphes pour ##CITYNAME##</p>
 
 <script src="javascripts/jquery-3.4.1.min.js" type="text/javascript" language="javascript"></script>
 <script src="javascripts/require.js" type="text/javascript" language="javascript"></script>
@@ -50,22 +50,25 @@
         });
         return result;
     }
-    var buildLabel = function(data){
+    var buildLabel = function (data) {
         // vérification des données
         if (typeof data == 'undefined') {
             console.error("Erreur données api meteo nul");
             return null;
-        } else if (typeof data[0].timestamp == 'undefined') {
+        } else if (typeof data[0].date == 'undefined') {
             console.error("Erreur données pour la ville vide");
             return null;
         }
         // algo pour construire le résultat
         var result = [];
         data.forEach(element => {
-            result.push((new Date(element.timestamp)).toLocaleDateString('en-GB', {
-                day : 'numeric',
-                month : 'short',
-                year : 'numeric'
+            result.push((new Date(element.date)).toLocaleDateString('en-GB', {
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
             }));
         });
         return result;
@@ -86,7 +89,7 @@
         var humidityCanvas = document.getElementById('humidity').getContext('2d');
         var pressureCanvas = document.getElementById('pressure').getContext('2d');
         var data = [{
-                "timestamp" : 12435545436,
+                "date": 12435545436,
                 "cities": [{
                     "name": "Paris",
                     "long": 2.35,
@@ -96,7 +99,7 @@
                     "humidity": 62
                 }]
             }, {
-                "timestamp" : 12544865543,
+                "date": 12544865543,
                 "cities": [{
                     "name": "Paris",
                     "long": 2.35,
@@ -107,7 +110,7 @@
                 }]
             },
                 {
-                    "timestamp" : 15425565765,
+                    "date": 15425565765,
                     "cities": [{
                         "name": "Paris",
                         "long": 2.35,
@@ -116,16 +119,7 @@
                         "pressure": 996,
                         "humidity": 22
                     }]
-                }]
-        ;
-        var labelsdata = buildLabel(data);
-        var dataCleanedHeat = calculateVariance(data, 'Paris', 'temp');
-        var dataCleanedHumid = calculateVariance(data, 'Paris', 'humidity');
-        var dataCleanedPress = calculateVariance(data, 'Paris', 'pressure');
-        // récupération des datas pour une ville
-        var cityname = "Paris";
-        var startTime = 0;
-        var endTime = Date.now();
+                }];
         // ajax pour les requêtes
         /*
         $.ajax({
@@ -136,6 +130,18 @@
           });
 
          */
+        var focusedCity = 'Paris'; // TODO A REMPLACER PAR LA VILLE VOULU
+        $('.containCityName').each(function(){
+            this.textContent = this.textContent.replace('##CITYNAME##',focusedCity);
+        });
+        var labelsdata = buildLabel(data);
+        var dataCleanedHeat = calculateVariance(data, focusedCity, 'temp');
+        var dataCleanedHumid = calculateVariance(data, focusedCity, 'humidity');
+        var dataCleanedPress = calculateVariance(data, focusedCity, 'pressure');
+        // récupération des datas pour une ville
+        var cityname = "Paris";
+        var startTime = 0;
+        var endTime = Date.now();
         // mise en place des charts
         var heatData = {
             type: 'bar',
@@ -144,7 +150,7 @@
                 datasets: [{
                     label: 'Variation de température',
                     data: dataCleanedHeat,
-                    backgroundColor: createLabelColor(dataCleanedHeat, "#FF6600"),
+                    backgroundColor: createLabelColor(dataCleanedHeat, "#FF660044"),
                     borderColor: createLabelColor(dataCleanedHeat, "#AA3322"),
                     borderWidth: 1
                 }]
@@ -167,7 +173,7 @@
                 datasets: [{
                     label: 'Variation de température',
                     data: dataCleanedHumid,
-                    backgroundColor: createLabelColor(dataCleanedHumid, "#0033FF"),
+                    backgroundColor: createLabelColor(dataCleanedHumid, "#0033FF44"),
                     borderColor: createLabelColor(dataCleanedHumid, "#0033AA"),
                     borderWidth: 1
                 }]
@@ -190,7 +196,7 @@
                 datasets: [{
                     label: 'Variation de pression',
                     data: dataCleanedPress,
-                    backgroundColor: createLabelColor(dataCleanedPress, "#00AAAA"),
+                    backgroundColor: createLabelColor(dataCleanedPress, "#00AAAA44"),
                     borderColor: createLabelColor(dataCleanedPress, "#005555"),
                     borderWidth: 1
                 }]
