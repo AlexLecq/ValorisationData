@@ -27,16 +27,15 @@ mqttClient.on("connect", () => {
 
 mqttClient.subscribe(process.env.MQTT_TOPIC, (err) => {
   if (err) throw err;
-  mqttClient.on("message", (topic, weather) => {
-    // message is Buffer
+  mqttClient.on('message', async (topic, weather) => {
     if (!weather) {
-      console.error("Aucune donnée n'a été récupéré");
+      console.error('Aucune donnée n\'a été récupéré');
       return;
     }
     const weatherJson = JSON.parse(weather.toString());
     console.table(weatherJson);
-    if (!weatherDataClient.insert(weatherJson))
-      console.error("Impossible d'insérer dans la base");
+    if (!await weatherDataClient.insert(weatherJson))
+      console.log('Impossible d\'insérer dans la base');
   });
 });
 
@@ -66,3 +65,14 @@ app.get("/cities/now", async (req, res) => {
   if (data) res.send(data);
   else res.status(500).send("No data found!");
 });
+
+async function f() {
+  try {
+    const a = await weatherDataClient.getDataForPeriod(0, Date.now());
+    console.log(a);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+f();

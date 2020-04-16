@@ -11,65 +11,112 @@ module.exports = class WeatherDataAccess {
     }
 
     async insert(weatherData) {
-        try {
-            const mongoClient = await MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true});
+        return new Promise(async (resolve, reject) => {
+            let mongoClient;
+            try {
+                mongoClient = await MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true});
+            } catch (e) {
+                reject("Connexion to database failed");
+                return;
+            }
             const col = mongoClient.db(this.mongodb_db).collection(this.mongodb_collection);
-            console.log(`Connection BDD => OK | DB.COLLECTION => ${col.namespace}`);
-            await col.insertOne(Object.assign({date: Date.now()}, weatherData));
+            if (col) {
+                col.insertOne(Object.assign({date: Date.now()}, weatherData), {}, (error, result) => {
+                    if (error)
+                        reject("No data inserted");
+                    else
+                        resolve(result);
+                });
+            } else {
+                reject("MongoDB collection doesn't exist");
+            }
             await mongoClient.close();
-            return true;
-        } catch (e) {
-            return false;
-        }
+        });
     }
 
     async getCurrentData() {
-        try {
-            const mongoClient = await MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true});
+        return new Promise(async (resolve, reject) => {
+            let mongoClient;
+            try {
+                mongoClient = await MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true});
+            } catch (e) {
+                reject("Connexion to database failed");
+                return;
+            }
             const col = mongoClient.db(this.mongodb_db).collection(this.mongodb_collection);
-            const result = await col.find().sort({date:-1}).limit(1);
+            if (col) {
+                col.find({}, {sort: {date: -1}, limit: 1}).toArray((error, result) => {
+                    if (error)
+                        reject("No data found");
+                    else
+                        resolve(result);
+                });
+            } else {
+                reject("MongoDB collection doesn't exist");
+            }
             await mongoClient.close();
-            return result;
-        } catch (e) {
-            return null;
-        }
+        });
     }
 
-    async getDataForPeriod(startTime, endTime) {
-        try {
-            const mongoClient = await MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true});
+    getDataForPeriod(startTime, endTime) {
+        return new Promise(async (resolve, reject) => {
+            let mongoClient;
+            try {
+                mongoClient = await MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true});
+            } catch (e) {
+                reject("Connexion to database failed");
+                return;
+            }
             const col = mongoClient.db(this.mongodb_db).collection(this.mongodb_collection);
-            const result = await col.find({
-                $and: [{
-                    date: {$gte: startTime}
-                }, {
-                    date: {$lte: endTime}
-                }]
-            });
+            if (col) {
+                col.find({
+                    $and: [{
+                        date: {$gte: startTime}
+                    }, {
+                        date: {$lte: endTime}
+                    }]
+                }).toArray((error, result) => {
+                    if (error)
+                        reject("No data found");
+                    else
+                        resolve(result);
+                });
+            } else {
+                reject("MongoDB collection doesn't exist");
+            }
             await mongoClient.close();
-            return result;
-        } catch (e) {
-            return null;
-        }
+        });
     }
 
-    async getCityDataForPeriod(startTime, endTime, cityName) {
-        try {
-            const mongoClient = await MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true});
+    getCityDataForPeriod(startTime, endTime, cityName) {
+        return new Promise(async (resolve, reject) => {
+            let mongoClient;
+            try {
+                mongoClient = await MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true});
+            } catch (e) {
+                reject("Connexion to database failed");
+                return;
+            }
             const col = mongoClient.db(this.mongodb_db).collection(this.mongodb_collection);
-            const result = await col.find({
-                $and: [{
-                    date: {$gte: startTime},
-                    cities: {name: cityName}
-                }, {
-                    date: {$lte: endTime},
-                    cities: {name: cityName}
-                }]
-            });
+            if (col) {
+                col.findOne({
+                    $and: [{
+                        date: {$gte: startTime},
+                        cities: {name: cityName}
+                    }, {
+                        date: {$lte: endTime},
+                        cities: {name: cityName}
+                    }]
+                }, (error, result) => {
+                    if (error)
+                        reject("No data found");
+                    else
+                        resolve(result);
+                });
+            } else {
+                reject("MongoDB collection doesn't exist");
+            }
             await mongoClient.close();
-            return result;
-        } catch (e) {
-            return null;
-        }
+        });
     }
 };
