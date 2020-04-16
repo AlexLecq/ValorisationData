@@ -8,7 +8,7 @@ Cette application s'inscrit dans le cadre d'un TP IoT, cherchant à valoriser de
 
 Notre application permet la visualisation des données météorologiques actuelles et des variations de températures, d'humidité et de pression en fonction des quelques plus grandes villes Francaise.
 
-## ![webapp-map](/Users/petitpanda/Documents/Dev-EPSI/IOT-EPSI/ValorisationData/webapp-map.png)Choix des outils et technologies
+## ![webapp-map](https://github.com/AlexLecq/ValorisationData/blob/master/webapp-map.png)Choix des outils et technologies
 
 - Afin de se rapprocher au maximum du comportement d'un objet connecté, nous utilisons un script **Python** permettant le lien entre la source de données et le **serveur MQTT**
 - Nous utilisons **NodeJS** afin de développer l'Application Web, cette technologie propose énormément de librairies afin de répondre facilement aux besoins de l'application et, est régulièrement mise à jour.
