@@ -69,7 +69,10 @@ app.get('/cities/now', async (req, res) => {
 async function f() {
     try {
         const a = await weatherDataClient.getCityDataForPeriod(0, Date.now(),'Paris');
-        console.log(a);
+        // console.log(a);
+        for(const b of a){
+          console.log(b);
+        }
     } catch (e) {
         console.error(e);
     }

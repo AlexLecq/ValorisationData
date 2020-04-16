@@ -10,8 +10,8 @@ module.exports = class WeatherDataAccess {
         this.mongodb_collection = col;
     }
 
-    async insert(weatherData) {
-        return new Promise(async (resolve, reject) => {
+    insert(weatherData) {
+        return new Promise((resolve, reject) => {
             MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true}, (dbError, mongoClient) => {
                 if (dbError) {
                     reject('Connexion to database failed');
@@ -82,16 +82,21 @@ module.exports = class WeatherDataAccess {
                 mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).find({
                     $and: [{
                         date: {$gte: startTime},
-                        cities: {$elemMatch: {name: cityName}}
                     }, {
                         date: {$lte: endTime},
-                        cities: {$elemMatch: {name: cityName}}
                     }]
                 }).toArray((error, result) => {
                     if (error)
                         reject('No data found');
-                    else
-                        resolve(result);
+                    else {
+                        let realResult = [];
+                        for (let oneData of result)
+                            realResult.push({
+                                date: oneData.date,
+                                city: oneData.cities.find((city) => city.name === cityName)
+                            });
+                        resolve(realResult);
+                    }
                     mongoClient.close();
                 });
             });
