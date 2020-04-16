@@ -14,7 +14,6 @@ module.exports = class WeatherDataAccess {
         try {
             const mongoClient = await MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true});
             const col = mongoClient.db(this.mongodb_db).collection(this.mongodb_collection);
-            console.log(`Connection BDD => OK | DB.COLLECTION => ${col.namespace}`);
             await col.insertOne(Object.assign({date: Date.now()}, weatherData));
             await mongoClient.close();
             return true;
