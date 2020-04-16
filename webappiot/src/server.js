@@ -65,14 +65,3 @@ app.get('/cities/now', async (req, res) => {
      if (data) res.send(data);
      else res.status(500).send('No data found!');
 });
-
-async function f() {
-     try {
-          const a = await weatherDataClient.getCityDataForPeriod(0, Date.now(), 'Paris');
-          console.log(a);
-     } catch (e) {
-          console.error(e);
-     }
-}
-
-//f();
