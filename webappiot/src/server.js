@@ -2,7 +2,6 @@ require("dotenv").config();
 const mqtt = require("mqtt");
 const express = require("express");
 const app = express();
-const server = require("http").createServer(app);
 const WeatherDataAccess = require("./dal/WeatherDataAccess");
 const weatherDataClient = new WeatherDataAccess({
   url: process.env.MONGODB_URL,
@@ -22,21 +21,22 @@ app.use(express.json());
 app.use(express.static("public"));
 app.listen(process.env.PORT);
 
-client.on("connect", () => {
+mqttClient.on("connect", () => {
   console.log("Connection serveur MQTT => OK");
 });
 
-client.subscribe(process.env.MQTT_TOPIC, (err) => {
+mqttClient.subscribe(process.env.MQTT_TOPIC, (err) => {
   if (err) throw err;
-  client.on("message", (topic, weather) => {
+  mqttClient.on("message", (topic, weather) => {
     // message is Buffer
     if (!weather) {
       console.error("Aucune donnée n'a été récupéré");
       return;
     }
     const weatherJson = JSON.parse(weather.toString());
+    console.table(weatherJson);
     if (!weatherDataClient.insert(weatherJson))
-      console.log("Impossible d'insérer dans la base");
+      console.error("Impossible d'insérer dans la base");
   });
 });
 
