@@ -16,7 +16,7 @@ Notre application permet la visualisation des données météorologiques actuell
 
 ## Fonctionnement
 
-1. Un script Python est lancé à interval régulier afin de récupérer les données méteo de l'API **OpenWeather**
+1. Un script Python est lancé à interval régulier afin de récupérer les données méteo de l'API **OpenWeather**, la ligne de commande permettant de mettre en place la planification de cette tâche se trouve dans le fichier Task.txt
 2. Ce script vient **s'abonner** et **publier** les données sur un topic d'un serveur MQTT distant
 3. L'application Web vient **s'abonner** au topic et récupérer les données du serveur MQTT
 4. Elle les stocke dans une base de données MongoDB avec la date et l'heure de stockage afin d'avoir un historique

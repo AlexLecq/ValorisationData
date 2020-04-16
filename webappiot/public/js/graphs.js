@@ -3,10 +3,10 @@ const humidityCanvas = document.getElementById('humidity').getContext('2d');
 const pressureCanvas = document.getElementById('pressure').getContext('2d');
 
 /***
- * Create all the graphs to display
+ * Get the data from the API and draw the charts
  * @param focusedCity
  */
-function createGraphs(focusedCity) {
+function createCharts(focusedCity) {
     fetch(`/city?startTime=${0}&endTime=${Date.now()}&cityName=${focusedCity}`, {
         method: 'GET',
         mode: 'cors',
@@ -21,16 +21,16 @@ function createGraphs(focusedCity) {
     });
 }
 
-
-function drawCharts(data, focusedCity) {
-    $('.containCityName').each(function () {
-        this.textContent = this.textContent.replace('##CITYNAME##', focusedCity);
-    });
-    const labelsdata = buildLabel(data);
-    const dataCleanedHeat = computeVariation(data, focusedCity, 'temp');
-    const dataCleanedHumid = computeVariation(data, focusedCity, 'humidity');
-    const dataCleanedPress = computeVariation(data, focusedCity, 'pressure');
-    console.log(dataCleanedPress);
+/***
+ * format the data for each chart and create them
+ * @param allData
+ * @param focusedCity
+ */
+function drawCharts(allData, focusedCity) {
+    const labelsdata = buildLabel(allData);
+    const dataCleanedHeat = computeVariation(allData, focusedCity, 'temp');
+    const dataCleanedHumid = computeVariation(allData, focusedCity, 'humidity');
+    const dataCleanedPress = computeVariation(allData, focusedCity, 'pressure');
 
     // mise en place des charts
     const heatData = {
@@ -61,7 +61,7 @@ function drawCharts(data, focusedCity) {
         data: {
             labels: labelsdata,
             datasets: [{
-                label: 'variation de température',
+                label: 'variation de l\'humidité',
                 data: dataCleanedHumid,
                 backgroundColor: createLabelColor(dataCleanedHumid, "#0033FF44"),
                 borderColor: createLabelColor(dataCleanedHumid, "#0033AA"),
@@ -153,7 +153,7 @@ function buildLabel(allData) {
 }
 
 /***
- *
+ * create the colors for the labels
  * @param data
  * @param color
  * @returns {[]}

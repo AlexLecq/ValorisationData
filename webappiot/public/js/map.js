@@ -36,7 +36,7 @@ fetch('/cities/now', {
                     </br>
                     Taux d'humidité: ${city.humidity} %
                `);
-            createGraphs(city.name);
+            createCharts(city.name);
             $('#exampleModalCenter').modal('toggle');
         });
         circle.on('mouseover', (e) => {
