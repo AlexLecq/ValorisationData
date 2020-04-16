@@ -126,7 +126,7 @@ function computeVariation(allData, cityName, attribut) {
         const cityData = oneData.city;
         let currentData = cityData[attribut];
         if (previousData)
-            variations.push(currentData - previousData);
+            variations.push((currentData - previousData).toFixed(2));
         previousData = currentData;
     }
     return variations;

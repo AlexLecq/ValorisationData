@@ -25,7 +25,6 @@ fetch('/cities/now', {
             fillOpacity: 0.5,
             radius: city.humidity * 400
         }).addTo(mymap);
-        const htmlCircle = circle.getPane();
         circle.on('click', (e) => {
             $('#modalTitle').html(`<strong>${city.name}</strong>`);
             $('#actualData').html(`
@@ -40,12 +39,10 @@ fetch('/cities/now', {
             $('#exampleModalCenter').modal('toggle');
         });
         circle.on('mouseover', (e) => {
-            circle.options.radius += 1000;
-            htmlCircle.style.opacity = 0.8;
+            e.target.setStyle({fillOpacity: 1});
         });
         circle.on('mouseout', (e) => {
-            circle.options.radius -= 1000;
-            htmlCircle.style.opacity = 1;
+            e.target.setStyle({fillOpacity: 0.5});
         });
     }
 }).catch((err) => {
