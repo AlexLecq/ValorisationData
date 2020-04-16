@@ -12,64 +12,50 @@ module.exports = class WeatherDataAccess {
 
      async insert(weatherData) {
           return new Promise(async (resolve, reject) => {
-               let mongoClient;
-               try {
-                    mongoClient = await MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true });
-               } catch (e) {
-                    reject("Connexion to database failed");
-                    return;
-               }
-               const col = mongoClient.db(this.mongodb_db).collection(this.mongodb_collection);
-               if (col) {
-                    col.insertOne(Object.assign({ date: Date.now() }, weatherData), {}, (error, result) => {
+               MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true }, (dbError, mongoClient) => {
+                    if (dbError) {
+                         reject('Connexion to database failed');
+                         return;
+                    }
+                    mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).insertOne(Object.assign({ date: Date.now() }, weatherData), {}, (error, result) => {
                          if (error)
-                              reject("No data inserted");
+                              reject('No data inserted');
                          else
                               resolve(result);
                     });
-               } else {
-                    reject("MongoDB collection doesn't exist");
-               }
-               await mongoClient.close();
+               });
           });
      }
 
-     async getCurrentData() {
-          return new Promise(async (resolve, reject) => {
-               let mongoClient;
-               try {
-                    mongoClient = await MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true });
-               } catch (e) {
-                    reject("Connexion to database failed");
-                    return;
-               }
-               const col = mongoClient.db(this.mongodb_db).collection(this.mongodb_collection);
-               if (col) {
-                    col.find({}, { sort: { date: -1 }, limit: 1 }).toArray((error, result) => {
+     getCurrentData() {
+          return new Promise((resolve, reject) => {
+               MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true }, (dbError, mongoClient) => {
+                    if (dbError) {
+                         reject('Connexion to database failed');
+                         return;
+                    }
+                    mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).find({}, {
+                         sort: { date: -1 },
+                         limit: 1
+                    }).toArray((error, result) => {
                          if (error)
-                              reject("No data found");
+                              reject('No data found');
                          else
                               resolve(result);
+                         mongoClient.close();
                     });
-               } else {
-                    reject("MongoDB collection doesn't exist");
-               }
-               await mongoClient.close();
+               });
           });
      }
 
      getDataForPeriod(startTime, endTime) {
-          return new Promise(async (resolve, reject) => {
-               let mongoClient;
-               try {
-                    mongoClient = await MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true });
-               } catch (e) {
-                    reject("Connexion to database failed");
-                    return;
-               }
-               const col = mongoClient.db(this.mongodb_db).collection(this.mongodb_collection);
-               if (col) {
-                    col.find({
+          return new Promise((resolve, reject) => {
+               MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true }, (dbError, mongoClient) => {
+                    if (dbError) {
+                         reject('Connexion to database failed');
+                         return;
+                    }
+                    mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).find({
                          $and: [{
                               date: { $gte: startTime }
                          }, {
@@ -77,46 +63,38 @@ module.exports = class WeatherDataAccess {
                          }]
                     }).toArray((error, result) => {
                          if (error)
-                              reject("No data found");
+                              reject('No data found');
                          else
                               resolve(result);
+                         mongoClient.close();
                     });
-               } else {
-                    reject("MongoDB collection doesn't exist");
-               }
-               await mongoClient.close();
+               });
           });
      }
 
      getCityDataForPeriod(startTime, endTime, cityName) {
-          return new Promise(async (resolve, reject) => {
-               let mongoClient;
-               try {
-                    mongoClient = await MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true });
-               } catch (e) {
-                    reject("Connexion to database failed");
-                    return;
-               }
-               const col = mongoClient.db(this.mongodb_db).collection(this.mongodb_collection);
-               if (col) {
-                    col.findOne({
+          return new Promise((resolve, reject) => {
+               MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true }, (dbError, mongoClient) => {
+                    if (dbError) {
+                         reject('Connexion to database failed');
+                         return;
+                    }
+                    mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).find({
                          $and: [{
                               date: { $gte: startTime },
-                              cities: { name: cityName }
+                              cities: { $elemMatch: { name: cityName } }
                          }, {
                               date: { $lte: endTime },
-                              cities: { name: cityName }
+                              cities: { $elemMatch: { name: cityName } }
                          }]
-                    }, (error, result) => {
+                    }).toArray((error, result) => {
                          if (error)
-                              reject("No data found");
+                              reject('No data found');
                          else
                               resolve(result);
+                         mongoClient.close();
                     });
-               } else {
-                    reject("MongoDB collection doesn't exist");
-               }
-               await mongoClient.close();
+               });
           });
      }
 };

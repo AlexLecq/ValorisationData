@@ -1,8 +1,8 @@
-require("dotenv").config();
-const mqtt = require("mqtt");
-const express = require("express");
+require('dotenv').config();
+const mqtt = require('mqtt');
+const express = require('express');
 const app = express();
-const WeatherDataAccess = require("./dal/WeatherDataAccess");
+const WeatherDataAccess = require('./dal/WeatherDataAccess');
 const weatherDataClient = new WeatherDataAccess({
      url: process.env.MONGODB_URL,
      db: process.env.MONGODB_DB,
@@ -13,16 +13,16 @@ try {
      mqttClient = mqtt.connect(process.env.MQTT_URL);
 } catch (e) {
      console.error(
-          "un problème est survenue lors de la connexion au serveur MQTT : " + e
+          'un problème est survenue lors de la connexion au serveur MQTT : ' + e
      );
 }
 
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static('public'));
 app.listen(process.env.PORT);
 
-mqttClient.on("connect", () => {
-     console.log("Connection serveur MQTT => OK");
+mqttClient.on('connect', () => {
+     console.log('Connection serveur MQTT => OK');
 });
 
 mqttClient.subscribe(process.env.MQTT_TOPIC, (err) => {
@@ -39,15 +39,15 @@ mqttClient.subscribe(process.env.MQTT_TOPIC, (err) => {
      });
 });
 
-app.get("/cities", async (req, res) => {
+app.get('/cities', async (req, res) => {
      const startTime = req.query.startTime;
      const endTime = req.query.endTime;
      const data = await weatherDataClient.getDataForPeriod(startTime, endTime);
      if (data) res.send(data);
-     else res.status(500).send("No data found!");
+     else res.status(500).send('No data found!');
 });
 
-app.get("/city", async (req, res) => {
+app.get('/city', async (req, res) => {
      const startTime = req.query.startTime;
      const endTime = req.query.endTime;
      const cityName = req.query.cityName;
@@ -57,18 +57,18 @@ app.get("/city", async (req, res) => {
           cityName
      );
      if (data) res.send(data);
-     else res.status(500).send("No data found!");
+     else res.status(500).send('No data found!');
 });
 
-app.get("/cities/now", async (req, res) => {
+app.get('/cities/now', async (req, res) => {
      const data = await weatherDataClient.getCurrentData();
      if (data) res.send(data);
-     else res.status(500).send("No data found!");
+     else res.status(500).send('No data found!');
 });
 
 async function f() {
      try {
-          const a = await weatherDataClient.getDataForPeriod(0, Date.now());
+          const a = await weatherDataClient.getCityDataForPeriod(0, Date.now(), 'Paris');
           console.log(a);
      } catch (e) {
           console.error(e);
