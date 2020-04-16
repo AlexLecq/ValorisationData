@@ -14,12 +14,12 @@ module.exports = class WeatherDataAccess {
         return new Promise(async (resolve, reject) => {
             MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true}, (dbError, mongoClient) => {
                 if (dbError) {
-                    reject("Connexion to database failed");
+                    reject('Connexion to database failed');
                     return;
                 }
                 mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).insertOne(Object.assign({date: Date.now()}, weatherData), {}, (error, result) => {
                     if (error)
-                        reject("No data inserted");
+                        reject('No data inserted');
                     else
                         resolve(result);
                 });
@@ -31,7 +31,7 @@ module.exports = class WeatherDataAccess {
         return new Promise((resolve, reject) => {
             MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true}, (dbError, mongoClient) => {
                 if (dbError) {
-                    reject("Connexion to database failed");
+                    reject('Connexion to database failed');
                     return;
                 }
                 mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).find({}, {
@@ -39,7 +39,7 @@ module.exports = class WeatherDataAccess {
                     limit: 1
                 }).toArray((error, result) => {
                     if (error)
-                        reject("No data found");
+                        reject('No data found');
                     else
                         resolve(result);
                     mongoClient.close();
@@ -52,7 +52,7 @@ module.exports = class WeatherDataAccess {
         return new Promise((resolve, reject) => {
             MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true}, (dbError, mongoClient) => {
                 if (dbError) {
-                    reject("Connexion to database failed");
+                    reject('Connexion to database failed');
                     return;
                 }
                 mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).find({
@@ -63,7 +63,7 @@ module.exports = class WeatherDataAccess {
                     }]
                 }).toArray((error, result) => {
                     if (error)
-                        reject("No data found");
+                        reject('No data found');
                     else
                         resolve(result);
                     mongoClient.close();
@@ -76,7 +76,7 @@ module.exports = class WeatherDataAccess {
         return new Promise((resolve, reject) => {
             MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true}, (dbError, mongoClient) => {
                 if (dbError) {
-                    reject("Connexion to database failed");
+                    reject('Connexion to database failed');
                     return;
                 }
                 mongoClient.db(this.mongodb_db).collection(this.mongodb_collection).find({
@@ -89,7 +89,7 @@ module.exports = class WeatherDataAccess {
                     }]
                 }).toArray((error, result) => {
                     if (error)
-                        reject("No data found");
+                        reject('No data found');
                     else
                         resolve(result);
                     mongoClient.close();
