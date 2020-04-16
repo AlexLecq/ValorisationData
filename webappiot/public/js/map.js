@@ -40,6 +40,7 @@ fetch(url_server + '/cities/now', {
                     </br>
                     Taux d'humidité: ${city.humidity} %
                `);
+               createGraphs();
                $('#exampleModalCenter').modal('toggle');
           });
           circle.on('mouseover', (e) => {
