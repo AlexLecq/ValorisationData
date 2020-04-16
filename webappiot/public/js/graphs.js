@@ -1,12 +1,18 @@
 const heatCanvas = document.getElementById('heat').getContext('2d');
 const humidityCanvas = document.getElementById('humidity').getContext('2d');
 const pressureCanvas = document.getElementById('pressure').getContext('2d');
-
+let heatChart, humidityChart, pressureChart ;
 /***
  * Get the data from the API and draw the charts
  * @param focusedCity
  */
 function createCharts(focusedCity) {
+    if(heatChart)
+        heatChart.destroy();
+    if(humidityChart)
+        humidityChart.destroy();
+    if(pressureChart)
+        pressureChart.destroy();
     fetch(`/city?startTime=${0}&endTime=${Date.now()}&cityName=${focusedCity}`, {
         method: 'GET',
         mode: 'cors',
@@ -103,9 +109,9 @@ function drawCharts(allData, focusedCity) {
         }
     };
 
-    const heatChart = new Chart(heatCanvas, heatData);
-    const humidityChart = new Chart(humidityCanvas, humidityData);
-    const pressureChart = new Chart(pressureCanvas, pressureData);
+    heatChart = new Chart(heatCanvas, heatData);
+    humidityChart = new Chart(humidityCanvas, humidityData);
+    pressureChart = new Chart(pressureCanvas, pressureData);
 }
 
 /***
