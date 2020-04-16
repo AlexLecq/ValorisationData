@@ -10,6 +10,10 @@ module.exports = class WeatherDataAccess {
           this.mongodb_collection = col;
      }
 
+    /***
+     * Insére les données dans la base MongoDB
+     * @returns {Promise}
+     */
     insert(weatherData) {
         return new Promise((resolve, reject) => {
             MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true}, (dbError, mongoClient) => {
@@ -21,12 +25,16 @@ module.exports = class WeatherDataAccess {
                     if (error)
                         reject('No data inserted');
                     else
-                        resolve(result);
+                        resolve();
                 });
             });
         });
     }
 
+    /***
+     * Retourne les dernières données de toutes les villes
+     * @returns {Promise}
+     */
      getCurrentData() {
           return new Promise((resolve, reject) => {
                MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true }, (dbError, mongoClient) => {
@@ -48,6 +56,12 @@ module.exports = class WeatherDataAccess {
           });
      }
 
+    /***
+     * Retourne l'ensemble des données de toutes les villes sur une période
+     * @param startTime Timestamp
+     * @param endTime Timestamp
+     * @returns {Promise}
+     */
      getDataForPeriod(startTime, endTime) {
           return new Promise((resolve, reject) => {
                MongoClient.connect(this.mongodb_url, { useUnifiedTopology: true }, (dbError, mongoClient) => {
@@ -72,6 +86,13 @@ module.exports = class WeatherDataAccess {
           });
      }
 
+    /***
+     * Retourne l'ensemble des données pour une ville sur une période
+     * @param startTime Timestamp
+     * @param endTime Timestamp
+     * @param cityName String
+     * @returns {Promise}
+     */
     getCityDataForPeriod(startTime, endTime, cityName) {
         return new Promise((resolve, reject) => {
             MongoClient.connect(this.mongodb_url, {useUnifiedTopology: true}, (dbError, mongoClient) => {

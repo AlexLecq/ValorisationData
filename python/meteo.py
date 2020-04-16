@@ -3,12 +3,14 @@ import time
 import json
 from urllib.request import urlopen
 
+# Le topic utilisé pour MQTT
 WEATHER_TOPIC = 'meteoiot'
 
+# La liste des villes que l'on traite
 CITIES = ['Paris', 'Marseille', 'Lyon', 'Bordeaux', 'Nantes', 'Toulouse', 'Strasbourg', 'Nice', 'Lille', 'Montpellier']
 
-
-def get_data(city):
+# Retourne les données d'une ville
+def get_data_for_one_city(city):
     in_data = json.load(urlopen(f'http://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid=19053ef85ef1b948847c41a7b78585bc'))
     return {
         'name': city,
@@ -19,11 +21,11 @@ def get_data(city):
         'humidity': in_data['main']['humidity']
     }
 
-
-def get_all_data():
+# Retourne les données de toutes les villes
+def get_data_for_all_cities():
     all_data = []
     for city in CITIES:
-        all_data.append(get_data(city))
+        all_data.append(get_data_for_one_city(city))
     return json.dumps({'cities': all_data})
 
 
@@ -42,6 +44,6 @@ client.connect(broker)
 while not client.connection_state:
     time.sleep(1)
 
-client.publish(WEATHER_TOPIC, get_all_data(), 0, False)
+client.publish(WEATHER_TOPIC, get_data_for_all_cities(), 0, False)
 client.loop_stop()
 client.disconnect()
