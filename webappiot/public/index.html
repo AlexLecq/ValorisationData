@@ -22,7 +22,7 @@
      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
           integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
           crossorigin="anonymous"></script>
-     <script src="js/require.js" type="text/javascript" language="javascript"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
      <title>Meteo Web App</title>
 </head>
@@ -41,13 +41,11 @@
                     </div>
                     <div id="actualData" class="modal-body"></div>
                     <div class="modal-footer">
-                         <h1 class="containCityName">##CITYNAME##</h1>
-                         <p class="containCityName">Liste des graphes pour ##CITYNAME##</p>
-                         <h2>Variation de températures en degrés</h2>
+                         <h5>Variation de températures en degrés</h5>
                          <canvas id="heat"></canvas>
-                         <h2>Variation de l'humidité en pourcentage</h2>
+                         <h5>Variation de l'humidité en pourcentage</h5>
                          <canvas id="humidity"></canvas>
-                         <h2>Variation de pression de l'air en hPa</h2>
+                         <h5>Variation de pression de l'air en hPa</h5>
                          <canvas id="pressure"></canvas>
                     </div>
                </div>

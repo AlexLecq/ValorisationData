@@ -40,7 +40,7 @@ mqttClient.subscribe(process.env.MQTT_TOPIC, (err) => {
 //API
 
 app.get('/cities', async (req, res) => {
-    weatherDataClient.getDataForPeriod(req.query.startTime, req.query.endTime).then((result) => {
+    weatherDataClient.getDataForPeriod(parseInt(req.query.startTime, 10), parseInt(req.query.endTime, 10)).then((result) => {
         res.send(result);
     }).catch(() => {
         res.status(500).send('No data found!');
@@ -48,7 +48,7 @@ app.get('/cities', async (req, res) => {
 });
 
 app.get('/city', async (req, res) => {
-    weatherDataClient.getCityDataForPeriod(req.query.startTime, req.query.endTime, req.query.cityName).then((result) => {
+    weatherDataClient.getCityDataForPeriod(parseInt(req.query.startTime, 10), parseInt(req.query.endTime, 10), req.query.cityName).then((result) => {
         res.send(result);
     }).catch(() => {
         res.status(500).send('No data found!');
